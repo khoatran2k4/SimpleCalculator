@@ -1,5 +1,6 @@
 package com.example.mycalculator.buttonaction
 
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -24,75 +25,85 @@ class ButtonHandler (private val myTextView1: TextView, private val myTextView2:
         val expression1 = myTextView1.text.toString().trim()
         val expression2 = myTextView2.text.toString().trim()
 
-        val hasOperator = """\s[\+\-\*/]\s""".toRegex().containsMatchIn(expression1)
-        val regex = """(-?\d*\.?\d*)\s*([\+\-\*/])\s*(-?\d*\.?\d*)""".toRegex()
+        Log.d("DEBUG", "Operator Clicked: '$operator'")
+        Log.d("DEBUG", "expression1: '$expression1', expression2: '$expression2'")
+
+        // val hasOperator = """\s[\+\-\*/]\s""".toRegex().containsMatchIn(expression1)
+        // val regex = """(-?\d*\.?\d*)\s*([\+\-\*/])\s*$""".toRegex()
+
+        val regex = """(-?\d*\.?\d*)\s*([+\-x/])$""".toRegex()
+
         val match = regex.find(expression1)
 
-        if (expression1.isEmpty() && expression2.isEmpty()) return
+        try {
+            if (match != null) {
+                Log.d("DEBUG", "Match not null")
+                if (expression2 != "") {
 
-        if (expression1.isEmpty() && expression2.isNotEmpty() && operator != "=") {
-            myTextView1.text = "$expression2 $operator "
-            myTextView2.text = ""
-            return
+                    val (num1, operator) = match.destructured
+                    var number1 = num1.toDouble()
+                    var number2 = expression2.toDouble()
+                    val result = calculation(number1, operator, number2)
+
+                    Log.d("Calculator", "Kết quả của phép tính: $number1 $operator $expression2 = $result")
+
+                    if (operator == "=") {
+                        myTextView1.text = result.toString()
+                    } else {
+                        myTextView1.text = "${result.toString()} $operator"
+                    }
+                } else {
+                    if (operator != "=") {
+                        myTextView1.text = "$expression2 $operator"
+                    }
+                }
+            } else if (expression1 != "") {
+                if (operator != "=" && expression2 != "") {
+                    var number1 = expression1.toDouble()
+                    var number2 = expression2.toDouble()
+                    val result = calculation(number1, operator, number2)
+                    myTextView1.text = result.toString()
+                } else if (operator != "=" && expression2 == "") {
+                    myTextView1.text = "$expression1 $operator"
+                }
+            } else if (expression1 == "") {
+                Log.d("DEBUG", "Match null")
+                if (expression2 != "") {
+                    myTextView1.text = "$expression2 $operator "
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ERROR", "Exception in onOperatorClick: ${e.message}", e)
         }
-
         myTextView2.text = ""
     }
-
-
 
 
 
 
 
     fun checkEmpty (myTextView: TextView) : Boolean{
-        return myTextView.text.toString().trim().isEmpty()
+        return myTextView.text.toString().trim() == ""
     }
 
     fun checkEqualZero (myTextView: TextView) : Boolean {
         return myTextView.text.toString() == "0"
     }
 
-    fun calculation (number1: Double, operator: String, number2: Double) {
-        val result = when (operator) {
+    fun calculation (number1: Double, operator: String, number2: Double): Double{
+        val result: Double = when (operator) {
             "+" -> number1 + number2
             "-" -> number1 - number2
             "x" -> number1 * number2
-            "/" -> number2 / number2
-            else -> "Error"
+            "/" -> number1 / number2
+            else -> 0.0
         }
-        myTextView1.text = result.toString()
-        myTextView2.text = ""
+        //myTextView1.text = result.toString()
+        //myTextView2.text = ""
+        return result
     }
 
-//    fun calculation (myTextView: TextView) {
-//        val expression = myTextView.text.toString().trim()
-//
-//        val regex = """(-?\d*\.?\d*)\s*([\+\-\*/])\s*(-?\d*\.?\d*)""".toRegex()
-//
-//        val match = regex.find(expression)
-//
-//        if (match != null) {
-//            val (num1, operator, num2) = match.destructured
-//
-//            val number1 = num1.toDoubleOrNull()
-//            val number2 = num2.toDoubleOrNull()
-//
-//            if (number1 != null && number2 != null) {
-//                val result = when (operator) {
-//                    "+" -> number1 + number2
-//                    "-" -> number1 - number2
-//                    "x" -> number1 * number2
-//                    "/" -> number2 / number2
-//                    else -> "Error"
-//                }
-//                myTextView1.text = result.toString()
-//                myTextView2.text = ""
-//            }
-//        } else {
-//            myTextView1.text = "Error"
-//        }
-//    }
+
 
 
 }
