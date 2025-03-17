@@ -37,13 +37,19 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button14).setOnClickListener { buttonHandler.onNumberClick(it) }
         findViewById<Button>(R.id.button15).setOnClickListener { buttonHandler.onNumberClick(it) }
 
+        findViewById<Button>(R.id.button3).setOnClickListener { buttonHandler.onNumberClick(it) }
+
         findViewById<Button>(R.id.button4).setOnClickListener { buttonHandler.onOperatorClick(it) }
         findViewById<Button>(R.id.button8).setOnClickListener { buttonHandler.onOperatorClick(it) }
         findViewById<Button>(R.id.button12).setOnClickListener { buttonHandler.onOperatorClick(it) }
         findViewById<Button>(R.id.button16).setOnClickListener { buttonHandler.onOperatorClick(it) }
-        findViewById<Button>(R.id.button20).setOnClickListener { buttonHandler.onNumberClick(it) }
+        findViewById<Button>(R.id.button20).setOnClickListener { buttonHandler.onOperatorClick(it) }
 
+        findViewById<Button>(R.id.button).setOnClickListener { buttonHandler.onToggleSign(it) }
 
+        findViewById<Button>(R.id.button17).setOnClickListener { buttonHandler.onClear(it) }
+        findViewById<Button>(R.id.button18).setOnClickListener { buttonHandler.onClearAll(it) }
+        findViewById<Button>(R.id.button19).setOnClickListener { buttonHandler.onBackSpace(it) }
 
 
 
